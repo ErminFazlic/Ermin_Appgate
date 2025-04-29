@@ -61,6 +61,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddDbContext<Db>(options => options.UseInMemoryDatabase("Db"));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 var app = builder.Build();
 
