@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Backend.Controllers
 {
     [ApiController]
-    [Route("api")]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _service;
@@ -58,7 +57,7 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Authorize]
-        [Route("api/transaction")]
+        [Route("api/transactions")]
         public async Task<IActionResult> TransactionsPost([FromBody] CreateTransactionRequest request)
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString();
