@@ -58,6 +58,16 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
     });
 builder.Services.AddAuthorization();
 
+builder.Services.AddCors(config =>
+{
+    config.AddPolicy("AllowAll", policy =>
+     {
+         policy.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+     });
+});
+
 builder.Services.AddDbContext<Db>(options => options.UseInMemoryDatabase("Db"));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -75,10 +85,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAll");
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+app.Run("https://localhost:7058");
