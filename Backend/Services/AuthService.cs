@@ -1,15 +1,16 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Backend.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Backend.Services
 {
     public interface IAuthService
     {
-        bool Register(string username, string password);
-        string? Login(string username, string password);
-        Guid? GetUserIdFromToken(string token);
+        Task<bool> Register(string username, string password);
+        Task<string?> Login(string username, string password);
+        Task<Guid?> GetUserIdFromToken(string token);
     }
 
     public class AuthService(Db dbContext, IConfiguration configuration) : IAuthService
@@ -17,23 +18,23 @@ namespace Backend.Services
         private readonly Db _dbContext = dbContext;
         private readonly IConfiguration _configuration = configuration;
 
-        public bool Register(string username, string password)
+        public async Task<bool> Register(string username, string password)
         {
-            if (_dbContext.Users.Any(u => u.Username == username))
+            if (await _dbContext.Users.AnyAsync(u => u.Username == username))
             {
                 return false; // User already exists
             }
 
             var user = new User(username, password);
 
-            _dbContext.Users.Add(user);
-            _dbContext.SaveChanges();
+            await _dbContext.Users.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
-        public string? Login(string username, string password)
+        public async Task<string?> Login(string username, string password)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.Username == username && u.Password == password);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == password);
             if (user == null)
             {
                 return null; // Invalid credentials
@@ -42,7 +43,7 @@ namespace Backend.Services
             return generateJwtToken(user.Id.ToString(), user.Username);
         }
 
-        public Guid? GetUserIdFromToken(string token)
+        public async Task<Guid?> GetUserIdFromToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(token.Replace("Bearer ", string.Empty));
@@ -56,7 +57,7 @@ namespace Backend.Services
             {
                 return null; // Invalid user ID
             }
-            if (!_dbContext.Users.Any(u => u.Id == userId))
+            if (!await _dbContext.Users.AnyAsync(u => u.Id == userId))
             {
                 return null; // User not found
             }

@@ -25,7 +25,7 @@ namespace Backend.Controllers
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString();
 
-            var userId = _authService.GetUserIdFromToken(token);
+            var userId = await _authService.GetUserIdFromToken(token);
 
             if (userId == null)
             {
@@ -44,7 +44,7 @@ namespace Backend.Controllers
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString();
 
-            var userId = _authService.GetUserIdFromToken(token);
+            var userId = await _authService.GetUserIdFromToken(token);
 
             if (userId == null)
             {
@@ -63,7 +63,7 @@ namespace Backend.Controllers
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString();
 
-            var userId = _authService.GetUserIdFromToken(token);
+            var userId = await _authService.GetUserIdFromToken(token);
 
             if (userId == null)
             {

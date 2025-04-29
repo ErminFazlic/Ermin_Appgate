@@ -15,43 +15,39 @@ namespace Backend.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] LoginModel login)
+        public async Task<IActionResult> Register([FromBody] LoginModel login)
         {
             if (string.IsNullOrEmpty(login.Username) || string.IsNullOrEmpty(login.Password))
             {
                 return BadRequest("Username and password are required.");
             }
 
-            var result = _service.Register(login.Username, login.Password);
+            var result = await _service.Register(login.Username, login.Password);
 
-            if (result)
+            if (!result)
             {
-                return Ok("User registered successfully.");
+                 return BadRequest("User already exists.");
             }
-            else
-            {
-                return BadRequest("User already exists.");
-            }
+
+            return Ok("User registered successfully.");
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginModel login)
+        public async Task<IActionResult> Login([FromBody] LoginModel login)
         {
             if (string.IsNullOrEmpty(login.Username) || string.IsNullOrEmpty(login.Password))
             {
                 return BadRequest("Username and password are required.");
             }
 
-            var token = _service.Login(login.Username, login.Password);
+            var token = await _service.Login(login.Username, login.Password);
 
-            if (token != null)
+            if (token == null)
             {
-                return Ok(token);
+                 return Unauthorized("Invalid username or password.");
             }
-            else
-            {
-                return Unauthorized("Invalid username or password.");
-            }
+
+            return Ok(token);
         }
     }
 
