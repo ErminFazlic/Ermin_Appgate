@@ -1,3 +1,8 @@
+### Structure
+
+Currently the frontend folder is located in the backend project due to some configuration issues.
+This however should be fixed and the frontend placed in its own project.
+
 ### Not working
 
 Currently the testing of the frontend components is not working. The tests give error message "Support for the experimental syntax 'jsx' isn't currently enabled".
