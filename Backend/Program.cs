@@ -1,4 +1,5 @@
 using Backend;
+using Backend.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -58,6 +59,8 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddDbContext<Db>(options => options.UseInMemoryDatabase("Db"));
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
